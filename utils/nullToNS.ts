@@ -1,0 +1,1 @@
+export const nullToNS = (value: string | null | undefined): string => !!value ? value : 'NS';

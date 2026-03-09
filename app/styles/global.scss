@@ -1,0 +1,66 @@
+// Ant design
+
+.ant-btn {
+    box-shadow: none !important;
+}
+
+// Custom
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+}
+
+.d-none {
+    display: none;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.mt-4 {
+    margin-top: 2rem !important;
+}
+
+.mt-5 {
+    margin-top: 2.5rem !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-warning {
+    background: yellow !important;
+    color: black !important;
+
+    &:hover {
+        background-color: darken($color: yellow, $amount: 2%) !important;
+        color: black !important;
+    }
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
