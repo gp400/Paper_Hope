@@ -22,8 +22,9 @@ const usePurchaseOrderFormComponent = ({ articleId }: Props) => {
     const { articleService, purchaseOrderService } = useContext(ServicesContext)!;
     const [form] = Form.useForm();
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
-    const [notUpdateList, setNotUpdateList] = useState<number[]>([]);
     const [articles, setArticles] = useState<ArticleDto[]>([]);
+    const [showSkeleton, setShowSkeleton] = useState<boolean>(false);
+    const [notUpdateList, setNotUpdateList] = useState<number[]>([]);
     const [details, setDetails] = useState<PurchaseOrderDetailDto[]>([]);
 
     useEffect(() => {
@@ -109,16 +110,19 @@ const usePurchaseOrderFormComponent = ({ articleId }: Props) => {
 
     const fillForm = async (docId: number) => {
         setIsUpdate(true);
+        setShowSkeleton(true);
         setArticles(await articleService.getArticles(""));
         const purchaseOrder = await purchaseOrderService.getPurchaseOrderById(docId);
         setDetails(purchaseOrder.purchaseOrderDetails);
         form.setFieldsValue(purchaseOrder);
+        setShowSkeleton(false);
     }
 
     return {
         purchaseOrderService,
         form,
         articles,
+        showSkeleton,
         details,
         formArticleColumns,
         setIsUpdate,

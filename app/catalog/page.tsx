@@ -38,6 +38,7 @@ export default function CatalogPage() {
 
     const [form] = Form.useForm();
     const searchbarRef = useRef<SearchBarHandle>(null);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [stockClass, setStockClass] = useState<string>("");
     const [showSkeleton, setShowSkeleton] = useState<boolean>(false);
 
@@ -134,16 +135,16 @@ export default function CatalogPage() {
             article.image = fileList[0].thumbUrl!;
         }
 
-        clearFields();
-        setIsLoading(true);
+        setIsSaving(true);
         if (!values.id) {
             await createArticle(article);
         } else {
             await updateArticle(article);
         }
+        setIsSaving(false);
 
+        clearFields();
         await searchbarRef.current?.triggerSearch()
-        setIsLoading(false);
     };
 
     const onFinishFailed = (_: any) => { };
@@ -228,7 +229,7 @@ export default function CatalogPage() {
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
-            okText="Guardar"
+            okText={ isSaving ? <Spin indicator={<LoadingOutlined className="white" spin />} /> : "Guardar" }
             cancelText="Cancelar"
         >
             <Title className="text-center" level={3}>Llene los campos</Title>

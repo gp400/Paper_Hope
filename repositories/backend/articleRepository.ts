@@ -150,8 +150,7 @@ export class ArticleRepository {
     private async getById(id: number) {
         const article = await prisma.article.findUnique({
             where: {
-                id,
-                state: true
+                id
             }
         });
 

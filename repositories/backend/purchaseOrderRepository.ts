@@ -31,6 +31,9 @@ export class PurchaseOrderRepository {
                         }
                         : {}
                 ]
+            },
+            orderBy: {
+                createdAt: "desc"
             }
         });
         return purchaseOrders.map((purchaseOrder) => ({
@@ -272,8 +275,7 @@ export class PurchaseOrderRepository {
                 }
             },
             where: {
-                id,
-                state: true
+                id
             }
         });
 

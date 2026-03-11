@@ -27,7 +27,7 @@ const PurchaseOrderPage = () => {
 
     const onCreateClick = () => {
         setOpen(true);
-        setDocId(null)
+        setDocId(undefined)
     }
 
     const reload = async () => {

@@ -5,11 +5,7 @@ import type { SearchBarHandle } from "../../components/Searchbar/Searchbar";
 import { ArticleDto } from "@/dtos/articleDto";
 import { PurchaseOrderDto } from "@/dtos/purchaseOrderDto";
 import { ServicesContext } from "@/providers/servicesProvider";
-
-interface PurchaseOrderDetail {
-    articleId: number;
-    amount: number;
-}
+import { PurchaseOrderDetailDto } from "@/dtos/PurchaseOrderDetailDto";
 
 interface usePurchaseOrderProps {
     searchbarRef: React.RefObject<SearchBarHandle | null>
@@ -18,7 +14,7 @@ interface usePurchaseOrderProps {
 const usePurchaseOrder = ({ searchbarRef }: usePurchaseOrderProps) => {
 
     const { articleService, purchaseOrderService } = useContext(ServicesContext)!;
-    const [docId, setDocId] = useState<number | null>(null);
+    const [docId, setDocId] = useState<number | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [articles, setArticles] = useState<ArticleDto[]>([]);
     const [open, setOpen] = useState<boolean>(false);
@@ -90,15 +86,13 @@ const usePurchaseOrder = ({ searchbarRef }: usePurchaseOrderProps) => {
         },
     ]
 
-    const purchaseOrdersDetailsColumns: TableColumnsType<PurchaseOrderDetail> = [
+    const purchaseOrdersDetailsColumns: TableColumnsType<PurchaseOrderDetailDto> = [
         {
             title: 'Nombre del Artículo',
             dataIndex: 'articleName',
             key: 'articleName',
-            render: (_: any, record: PurchaseOrderDetail) => {
-                console.log({ articles, record });
-                let article = articles.find(article => article.id === record.articleId);
-                return <span>{article?.name}</span>
+            render: (_: any, record: PurchaseOrderDetailDto) => {
+                return <span>{record.article?.name}</span>
             }
         },
         {
@@ -116,7 +110,7 @@ const usePurchaseOrder = ({ searchbarRef }: usePurchaseOrderProps) => {
     const onDeleteClick = async (docId: number) => {
         setIsLoading(true);
         await purchaseOrderService.deletePurchaseOrder(docId);
-        searchbarRef.current?.triggerSearch()
+        await searchbarRef.current?.triggerSearch()
         setArticles(await articleService.getArticles(""));
         setIsLoading(false)
     }

@@ -1,5 +1,5 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Table } from "antd";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Skeleton, Spin, Table } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import usePurchaseOrderFormComponent from "./usePurchaseOrderFormComponent";
@@ -25,6 +25,7 @@ interface Props {
 const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }: Props) => {
 
     const [disabled, setDisabled] = useState<boolean>(true);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [maxAmount, setMaxAmount] = useState<number>(Number.MAX_VALUE);
     const [showDetailError, setShowDetailError] = useState<boolean>(false);
 
@@ -32,6 +33,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
         purchaseOrderService,
         form,
         articles,
+        showSkeleton,
         details,
         formArticleColumns,
         setIsUpdate,
@@ -93,13 +95,15 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
             purchaseOrderDetails: details
         }
 
+        setIsSaving(true);
         if (!values.id) {
             await purchaseOrderService.createPurchaseOrder(purchaseOrder);
         } else {
             await purchaseOrderService.updatePurchaseOrder({ id: Number(values.id), ...purchaseOrder });
         }
+        setIsSaving(false);
 
-        if (reload) reload();
+        reload?.();
 
         clearFields();
     };
@@ -122,7 +126,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
             open={open}
             onOk={handleOk}
             onCancel={handleCancel}
-            okText="Guardar"
+            okText={ isSaving ? <Spin indicator={<LoadingOutlined className="white" spin />} /> : "Guardar" }
             cancelText="Cancelar"
         >
             <Title className="text-center" level={3}>Llene los campos</Title>
@@ -145,7 +149,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                             name="name"
                             rules={[{ required: true, message: 'Ingrese el nombre o razón social' }]}
                         >
-                            <Input />
+                            {showSkeleton ? <Skeleton.Button active block /> : <Input />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={12}>
@@ -153,7 +157,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                             label="Dirección"
                             name="address"
                         >
-                            <Input />
+                            {showSkeleton ? <Skeleton.Button active block /> : <Input />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={12}>
@@ -164,7 +168,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                                 { pattern: /^[0-9-()\s]+$/, message: 'Asegurese que es un numero de teléfono valido' },
                             ]}
                         >
-                            <Input />
+                            {showSkeleton ? <Skeleton.Button active block /> : <Input />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={12}>
@@ -175,7 +179,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                                 { type: "email", message: "Ingrese un email valido" },
                             ]}
                         >
-                            <Input />
+                            {showSkeleton ? <Skeleton.Button active block /> : <Input />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={5}>
@@ -183,7 +187,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                             label="Cantidad"
                             name="amount"
                         >
-                            <InputNumber min={0} max={maxAmount} onChange={checkArticle} className="w-100" />
+                            {showSkeleton ? <Skeleton.Button active block /> : <InputNumber min={0} max={maxAmount} onChange={checkArticle} className="w-100" />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={19}>
@@ -203,13 +207,15 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                                         }
                                     ]}
                                 >
-                                    <Select
-                                        onChange={onArticleChange}
-                                        allowClear
-                                        placeholder="Seleccione un articulo"
-                                        options={getArticleOptions()}
-                                        showSearch={{ optionFilterProp: 'label' }}
-                                    />
+                                    {showSkeleton 
+                                        ? <Skeleton.Button active block /> 
+                                        : <Select
+                                            onChange={onArticleChange}
+                                            allowClear
+                                            placeholder="Seleccione un articulo"
+                                            options={getArticleOptions()}
+                                            showSearch={{ optionFilterProp: 'label' }}
+                                    />}
                                 </Form.Item>
                             </Col>
                             <Col>
@@ -229,6 +235,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                     details.length > 0
                     &&
                     <Table
+                        rowKey="id"
                         pagination={false}
                         dataSource={getFormArticleValues()}
                         columns={formArticleColumns}
