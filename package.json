@@ -15,6 +15,7 @@
     "@prisma/client": "^7.4.1",
     "antd": "^6.3.1",
     "axios": "^1.13.6",
+    "firebase": "^12.10.0",
     "next": "16.1.6",
     "next-swagger-doc": "^0.4.1",
     "react": "19.2.3",
