@@ -51,6 +51,8 @@ export const GET = async () => {
     let purchaseOrder: PurchaseOrderHere[] = [];
     let purchaseOrderDetail: PurchaseOrderDetailHere[] = [];
 
+    let detailMap: any[] = [];
+
     (await getDocs(collection(db, "article"))).forEach((doc) => {
         articles.push({ ...doc.data(), id: doc.id} as ArticleHere);
     });
