@@ -3,7 +3,7 @@ import globalErrorHandler from "../../../../exception/GlobalErrorHandler";
 import { ArticleService } from "@/services/backend/articleService";
 import { ArticleRepository } from "@/repositories/backend/articleRepository";
 
-export async function createArticle(request: NextRequest) {
+const createArticle = async (request: NextRequest) => {
     const articleDto = await request.json();
     const articleService = new ArticleService(new ArticleRepository());
     const article = await articleService.createArticle(articleDto);

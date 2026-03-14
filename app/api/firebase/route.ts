@@ -1,4 +1,9 @@
 import { ArticleDto } from "@/dtos/articleDto";
+import { prisma } from "@/lib/prisma";
+import { ArticleRepository } from "@/repositories/backend/articleRepository";
+import { PurchaseOrderRepository } from "@/repositories/backend/purchaseOrderRepository";
+import { ArticleService } from "@/services/backend/articleService";
+import { PurchaseOrderService } from "@/services/backend/purchaseOrderService";
 import { initializeApp } from "firebase/app";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { NextResponse } from "next/server";
@@ -48,22 +53,67 @@ export const GET = async () => {
     }
 
     let articles: ArticleHere[] = [];
-    let purchaseOrder: PurchaseOrderHere[] = [];
-    let purchaseOrderDetail: PurchaseOrderDetailHere[] = [];
+    let purchaseOrders: PurchaseOrderHere[] = [];
+    let purchaseOrderDetails: PurchaseOrderDetailHere[] = [];
 
-    let detailMap: any[] = [];
+    let articleMap = {};
+    let purchaseOrderMap= {};
 
     (await getDocs(collection(db, "article"))).forEach((doc) => {
         articles.push({ ...doc.data(), id: doc.id} as ArticleHere);
     });
 
     (await getDocs(collection(db, "purchaseOrder"))).forEach((doc) => {
-        purchaseOrder.push({ ...doc.data(), id: doc.id} as PurchaseOrderHere);
+        purchaseOrders.push({ ...doc.data(), id: doc.id} as PurchaseOrderHere);
     });
 
     (await getDocs(collection(db, "purchaseOrderDetail"))).forEach((doc) => {
-        purchaseOrderDetail.push({ ...doc.data(), id: doc.id} as PurchaseOrderDetailHere);
+        purchaseOrderDetails.push({ ...doc.data(), id: doc.id} as PurchaseOrderDetailHere);
     });
 
-    return NextResponse.json({a: articles[0], po: purchaseOrder[0], pod: purchaseOrderDetail[0]})
+    for (const articleDto of articles) {
+
+        let article = await prisma.article.create({
+            data: {
+                name: articleDto.name,
+                barcode: articleDto.barcode || "",
+                stock: articleDto.stock,
+                maxStock: articleDto.maxStock,
+                minStock: articleDto.minStock,
+                price: articleDto.price,
+                image: articleDto.image || "",
+                state: true
+            }
+        })
+
+        articleMap[articleDto.id!] = article.id
+    }
+
+    for (const purchaseOrderDto of purchaseOrders) {
+
+        const purchaseOrder = await prisma.purchaseOrder.create({
+            data: {
+                name: purchaseOrderDto.name,
+                email: purchaseOrderDto.email || '',
+                address: purchaseOrderDto.address || '',
+                phoneNumber: purchaseOrderDto.phoneNumber || '',
+                state: true
+            }
+        });
+
+        purchaseOrderMap[purchaseOrderDto.id!] = purchaseOrder.id
+    }
+
+    for (const detail of purchaseOrderDetails) {
+
+        const purchaseOrderDetail = await prisma.purchaseOrderDetail.create({
+            data: {
+                articleId: articleMap[detail.articleId],
+                purchaseOrderId: purchaseOrderMap[detail.purchaseOrderId],
+                amount: detail.amount
+            }
+        })
+    }
+
+    return NextResponse.json({articleMap, purchaseOrderMap});
 };
