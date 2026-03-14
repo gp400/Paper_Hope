@@ -64,7 +64,7 @@ export const GET = async () => {
     });
 
     (await getDocs(collection(db, "purchaseOrder"))).forEach((doc) => {
-        purchaseOrders.push({ ...doc.data(), id: doc.id} as PurchaseOrderHere);
+        purchaseOrders.push({ ...doc.data(), id: doc.id, createdAt: doc.data().createdAt?.toDate()} as PurchaseOrderHere);
     });
 
     (await getDocs(collection(db, "purchaseOrderDetail"))).forEach((doc) => {
@@ -97,6 +97,7 @@ export const GET = async () => {
                 email: purchaseOrderDto.email || '',
                 address: purchaseOrderDto.address || '',
                 phoneNumber: purchaseOrderDto.phoneNumber || '',
+                createdAt: purchaseOrderDto.createdAt,
                 state: true
             }
         });
