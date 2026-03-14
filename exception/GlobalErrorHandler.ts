@@ -2,9 +2,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { HttpException } from "./HttpException"
 
-export default function globalErrorHandler<
-    T extends (req: NextRequest, context: { params: Record<string, string> }) => Promise<NextResponse>
->(handler: T) {
+type RouteHandler = (req: NextRequest, context: any) => Promise<Response>
+
+export default function globalErrorHandler(handler: RouteHandler) {
     return async (req: NextRequest, context: { params: Record<string, string> }) => {
         try {
             return await handler(req, context)
