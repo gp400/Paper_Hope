@@ -2,7 +2,7 @@ import { ArticleDto } from "@/dtos/articleDto";
 import axios from "axios";
 
 const headers = {
-    "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY
+    "X-API-KEY": "df9648f4-cecb-4485-89a0-22cae00e8304"
 }
 
 export class ArticleRepository {

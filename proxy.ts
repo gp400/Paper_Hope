@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { apiKeyMiddleware } from "./middlewares/apiKeyMiddleware";
+import { apiKeyProxy } from "./proxies/apiKeyProxy";
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
 
   const middlewares = [
-    apiKeyMiddleware
+    apiKeyProxy
   ];
 
   for (const mw of middlewares) {
