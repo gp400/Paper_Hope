@@ -35,7 +35,7 @@ const Searchbar = forwardRef<SearchBarHandle, SearchBarProps>(({ placeholder, se
     return (<>
         <Row>
             <Col flex="1" style={{ width: '250px' }}>
-                <Input className="searchbar" placeholder={placeholder} value={filter} onKeyDown={handleKeyDown} onChange={handleChange} />
+                <Input className="searchbar" placeholder={placeholder} value={filter} onKeyDown={handleKeyDown} onChange={handleChange} allowClear />
             </Col>
             <Col>
                 <Button className="search-btn" type="primary" onClick={async () => await searchFunction(filter)} icon={<SearchOutlined />} />
