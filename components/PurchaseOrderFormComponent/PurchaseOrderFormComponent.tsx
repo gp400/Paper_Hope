@@ -126,7 +126,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
             open={open}
             onOk={handleOk}
             onCancel={handleCancel}
-            okText={ isSaving ? <Spin indicator={<LoadingOutlined className="white" spin />} /> : "Guardar" }
+            okText={isSaving ? <Spin indicator={<LoadingOutlined className="white" spin />} /> : "Guardar"}
             cancelText="Cancelar"
         >
             <Title className="text-center" level={3}>Llene los campos</Title>
@@ -187,7 +187,7 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                             label="Cantidad"
                             name="amount"
                         >
-                            {showSkeleton ? <Skeleton.Button active block /> : <InputNumber min={0} max={maxAmount} onChange={checkArticle} className="w-100" />}
+                            {showSkeleton ? <Skeleton.Button active block /> : <InputNumber type="number" min={0} max={maxAmount} onChange={checkArticle} className="w-100" />}
                         </Form.Item>
                     </Col>
                     <Col span={24} lg={19}>
@@ -207,15 +207,15 @@ const PurchaseOrderFormComponent = ({ open, docId, articleId, setOpen, reload }:
                                         }
                                     ]}
                                 >
-                                    {showSkeleton 
-                                        ? <Skeleton.Button active block /> 
+                                    {showSkeleton
+                                        ? <Skeleton.Button active block />
                                         : <Select
                                             onChange={onArticleChange}
                                             allowClear
                                             placeholder="Seleccione un articulo"
                                             options={getArticleOptions()}
                                             showSearch={{ optionFilterProp: 'label' }}
-                                    />}
+                                        />}
                                 </Form.Item>
                             </Col>
                             <Col>
